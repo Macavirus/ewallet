@@ -15,7 +15,7 @@
 defmodule EthGethAdapter.Worker do
   @moduledoc false
 
-  alias EthGethAdapter.{Balance, Transaction}
+  alias EthGethAdapter.{Balance, Transaction, Token}
 
   @type server :: GenServer.server()
   @typep from :: GenServer.from()
@@ -77,5 +77,9 @@ defmodule EthGethAdapter.Worker do
 
   def handle_call({:get_transaction_count, address}, _from, reg) do
     {:reply, Transaction.get_transaction_count(address), reg}
+  end
+
+  def handle_call({:get_field, contract_address, encoded_abi_data}, _from, reg) do
+    {:reply, Token.get(contract_address, encoded_abi_data), reg}
   end
 end

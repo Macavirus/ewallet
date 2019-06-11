@@ -12,27 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-defmodule EthBlockchain.ABI do
+defmodule EthGethAdapter.Token do
   @moduledoc false
   import Utils.Helpers.Encoding
 
-  def balance_of(address) when byte_size(address) == 42 do
-    {:ok, ABI.encode("balanceOf(address)", [from_hex(address)])}
-  end
+  alias Ethereumex.HttpClient, as: Client
 
-  def balance_of(_address), do: {:error, :invalid_address}
+  @doc """
 
-  def transfer(to_address, amount) when byte_size(to_address) == 42 and is_integer(amount) do
-    {:ok,
-     ABI.encode("transfer(address,uint)", [
-       from_hex(to_address),
-       amount
-     ])}
-  end
-
-  def transfer(_to_address, _amount), do: {:error, :invalid_input}
-
-  def get_field(field) do
-    {:ok, ABI.encode("#{field}()", [])}
+  """
+  def get(contract_address, encoded_abi_data) do
+    Client.eth_call(%{
+      data: encoded_abi_data,
+      to: contract_address
+    })
   end
 end
